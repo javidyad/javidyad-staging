@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>جاویدیاد · به یاد جاویدنامان</title>
+<meta name="description" content="JavidYad, in memory of the Javidnaman. Make a memorial poster for a Javidnam. Your photo never leaves your device.">
+<meta property="og:title" content="جاویدیاد · به یاد جاویدنامان">
+<meta property="og:description" content="Make a memorial poster for a Javidnam. Your photo never leaves your device. · پوستر یادبود جاویدنام بسازید. عکس شما از دستگاهتان خارج نمی‌شود.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://javidyad.com/">
+<meta property="og:image" content="https://javidyad.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lion and Sun emblem">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="Lion_and_Sun.png">
+<meta name="theme-color" content="#1b2a4a">
+<!-- jsPDF 2.5.1, self-hosted so no third-party request is made -->
+<script src="lib/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="css/base.css?v=202610280933">
+<link rel="stylesheet" href="css/poster.css?v=202610280933">
+</head>
+<body class="lang-pick">
+
+<div class="container" id="langScreen">
+  <img class="emblem" src="Lion_and_Sun.png" alt="Lion and Sun" onerror="this.hidden=true">
+  <h2>JavidYad<span class="tagline" lang="fa">جاویدیاد · به یاد جاویدنامان</span></h2>
+  <p class="lang-q">Choose your language<br>زبان خود را انتخاب کنید</p>
+  <div class="btns">
+    <button data-lang="en" dir="ltr">English</button>
+    <button data-lang="fa">فارسی</button>
+  </div>
+</div>
+
+<div class="container" id="container" hidden>
+  <div class="top"><img class="mini" src="Lion_and_Sun.png" alt="" onerror="this.hidden=true"><button id="langBtn" class="langbtn alt" type="button"></button></div>
+  <h2><span data-i18n="title"></span><span class="tagline" data-i18n="tagline"></span></h2>
+  <div class="warn" id="inApp" data-i18n="inApp" hidden></div>
+
+  <div class="paper">
+    <label for="posterLang" data-i18n="posterLangLabel"></label>
+    <select id="posterLang"><option value="en">English</option><option value="de">Deutsch</option></select>
+  </div>
+
+  <a class="from-list" id="fromList" href="javidnam.html" hidden>
+    <span class="fl-text"><span class="fl-main" data-i18n="fromListMain"></span><span class="fl-sub" data-i18n="fromListSub"></span></span>
+    <span class="fl-arrow" aria-hidden="true">→</span>
+  </a>
+  <div class="or" id="orLine" data-i18n="or" hidden></div>
+  <div class="chosen" id="chosen" hidden><span id="chosenText"></span><a id="chosenChange" href="javidnam.html" data-i18n="chosenChange"></a></div>
+  <label class="pick" id="pick">
+    <input type="file" id="imageInput" class="sr" accept="image/*">
+    <span class="pick-main" id="pickMain" data-i18n="pickMain"></span>
+    <span class="pick-sub" data-i18n="pickSub"></span>
+  </label>
+  <div class="privacy" data-i18n="privacy"></div>
+  <div class="warn" id="lowRes" data-i18n="lowRes" hidden></div>
+
+  <div class="stage" id="stage">
+    <canvas id="posterCanvas" tabindex="0" data-i18n-aria="previewAria"></canvas>
+    <div class="zoom-row" id="zoomRow" hidden>
+      <input type="range" id="zoomInput" min="1" max="3" step="0.01" value="1" data-i18n-aria="zoomLabel">
+      <span id="zoomLabel">100%</span>
+    </div>
+    <div class="note" id="hintNote" data-i18n="hint" hidden></div>
+    <div class="note" id="emptyNote" data-i18n="previewEmpty"></div>
+  </div>
+
+  <label class="field" for="nameInput" data-i18n="nameLabel"></label>
+  <input type="text" id="nameInput" dir="ltr" maxlength="40" autocapitalize="words" autocomplete="off" spellcheck="false" data-i18n-ph="namePh">
+
+  <div class="paper">
+    <label for="paperSize" data-i18n="paperLabel"></label>
+    <select id="paperSize"><option value="a3">A3</option><option value="a4">A4</option></select>
+  </div>
+  <div class="btns">
+    <button id="saveBtn" class="primary" data-i18n="save" disabled></button>
+    <button id="jpgBtn" class="alt" data-i18n="jpg" disabled></button>
+    <button id="pdfBtn" class="alt" data-i18n="pdf" disabled></button>
+    <button id="resetBtn" class="alt" data-i18n="reset"></button>
+  </div>
+  <div class="privacy" data-i18n="saveTip"></div>
+  <div class="done" id="done" hidden>
+    <span data-i18n="done"></span>
+    <button id="againBtn" class="alt" data-i18n="again"></button>
+  </div>
+  <div class="error" id="errorBox" hidden></div>
+  <p class="source"><span data-i18n="sourceNote"></span> <a href="https://github.com/javidyad/Javidyad" target="_blank" rel="noopener noreferrer" data-i18n="sourceLink"></a></p>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" hidden>
+  <div class="sheet">
+    <img id="resultImg" alt="">
+    <p data-i18n="holdTip"></p>
+    <div class="btns">
+      <button id="dlBtn" data-i18n="dlFile"></button>
+      <button id="closeBtn" class="alt" data-i18n="close"></button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/poster.js?v=202610280933"></script>
+<div style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99;padding:3px 14px;border-radius:0 0 8px 8px;background:#b98a1f;color:#1b2a4a;font:700 12px/1.6 Vazirmatn,Tahoma,sans-serif;pointer-events:none" lang="fa">نسخه‌ی آزمایشی · STAGING</div>
+</body>
+</html>

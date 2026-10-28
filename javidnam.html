@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>فهرست جاویدنامان · جاویدیاد</title>
+<meta name="description" content="Choose a Javidnam and make a memorial poster with their photo and name.">
+<meta property="og:title" content="فهرست جاویدنامان · جاویدیاد">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://javidyad.com/javidnam.html">
+<meta property="og:image" content="https://javidyad.com/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="Lion_and_Sun.png">
+<meta name="theme-color" content="#1b2a4a">
+<link rel="stylesheet" href="css/base.css?v=202610280933">
+<link rel="stylesheet" href="css/list.css?v=202610280933">
+</head>
+<body class="fa">
+<div class="container">
+  <div class="top">
+    <a class="back" id="backLink" href="index.html" data-i18n="back"></a>
+    <img class="mini" src="Lion_and_Sun.png" alt="" onerror="this.hidden=true">
+    <button id="langBtn" class="langbtn" type="button"></button>
+  </div>
+  <h2 data-i18n="title"></h2>
+  <ol class="steps">
+    <li data-i18n="step1"></li>
+    <li data-i18n="step2"></li>
+    <li data-i18n="step3"></li>
+  </ol>
+  <p class="about" id="about" hidden></p>
+
+  <div class="filters" id="filters" hidden>
+    <input type="search" id="search" autocomplete="off" spellcheck="false" data-i18n-ph="searchPh" data-i18n-aria="searchPh">
+    <div class="selects">
+      <select id="provSelect" data-i18n-aria="provLabel"></select>
+      <select id="citySelect" data-i18n-aria="cityLabel"></select>
+    </div>
+    <div class="chips" id="chips" role="group" data-i18n-aria="quick"></div>
+  </div>
+  <div id="results"></div>
+  <p class="status" id="status" data-i18n="loading"></p>
+</div>
+
+<script type="module" src="js/list.js?v=202610280933"></script>
+<div style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99;padding:3px 14px;border-radius:0 0 8px 8px;background:#b98a1f;color:#1b2a4a;font:700 12px/1.6 Vazirmatn,Tahoma,sans-serif;pointer-events:none" lang="fa">نسخه‌ی آزمایشی · STAGING</div>
+</body>
+</html>
