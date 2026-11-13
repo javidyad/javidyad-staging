@@ -1,5 +1,5 @@
 // Poster maker (index.html): template, photo, name, preview, export, and the Javidnam list hookup.
-import { $, el, params, urlLang, savedLang, translatePage, personFacts } from './common.js?v=202610301736';
+import { $, el, params, urlLang, savedLang, translatePage, personFacts } from './common.js?v=202611131139';
 
 /* ---------- Language ---------- */
 const STR = {
@@ -14,6 +14,8 @@ const STR = {
     previewAria: 'Poster preview',
     previewEmpty: 'This is how your finished poster will look. Choose a photo and type a name to fill it in.',
     paperLabel: 'PDF paper size', posterLangLabel: 'Poster language',
+    genderLabel: 'This person is', genderM: 'a man', genderF: 'a woman',
+    galleryLink: 'Campaign gallery', placardsLink: 'Posters and placards to print',
     save: 'Save to gallery', jpg: 'Download JPG', pdf: 'Download print PDF', reset: 'Reset',
     saveTip: 'In the menu that opens, choose “Save Image” (iPhone) or Photos / Gallery (Android).',
     preparing: 'Preparing…', done: 'Your poster is ready.', again: 'Make another poster',
@@ -47,6 +49,8 @@ const STR = {
     previewAria: 'پیش‌نمایش پوستر',
     previewEmpty: 'پوستر نهایی شما این شکلی می‌شود. عکس را انتخاب کنید و اسم را بنویسید تا جایگزین شوند.',
     paperLabel: 'اندازه‌ی کاغذ PDF', posterLangLabel: 'زبان پوستر',
+    genderLabel: 'این عزیز', genderM: 'مرد است', genderF: 'زن است',
+    galleryLink: 'گالری کمپین', placardsLink: 'پوسترها و پلاکاردهای آماده‌ی چاپ',
     save: 'ذخیره در گالری', jpg: 'دانلود JPG', pdf: 'دانلود PDF چاپی', reset: 'پاک کردن',
     saveTip: 'در منویی که باز می‌شود، «Save Image» (آیفون) یا Photos / Gallery (اندروید) را انتخاب کنید.',
     preparing: 'در حال آماده‌سازی…', done: 'پوستر شما آماده است.', again: 'ساخت پوستر جدید',
@@ -85,6 +89,7 @@ function applyLang(l) {
   translatePage(l, t);
   $('langBtn').textContent = t('otherLang');
   $('fromList').href = $('chosenChange').href = `javidnam.html?lang=${l}`;
+  $('galleryLink').href = `gallery.html?lang=${l}`; $('placardsLink').href = `placards.html?lang=${l}`;
   renderChosen();
   renderError();
 }
@@ -105,7 +110,13 @@ if (/FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat|Twitter|; wv\)/i.test(na
 
 /* ---------- Settings (coordinates are on the full-size template canvas) ---------- */
 const CONFIG = {
-  templates: { en: 'Template.jpg', de: 'Template-de.jpg' },   // one background per poster language, same layout
+  // one background per poster language, same layout, built by tools/make_templates.py; '-f' is the feminine form
+  // for languages where the word for "killed" follows the person's gender
+  templates: {
+    en: 'Template-en.jpg', de: 'Template-de.jpg', sv: 'Template-sv.jpg', nl: 'Template-nl.jpg',
+    fr: 'Template-fr.jpg', 'fr-f': 'Template-fr-f.jpg', it: 'Template-it.jpg', 'it-f': 'Template-it-f.jpg',
+    es: 'Template-es.jpg', 'es-f': 'Template-es-f.jpg'
+  },
   photoBox: { w: 3866, h: 3200, y: 1150, dx: 12 }, // photo box, matched to the width of the red lines above it; dx = small horizontal shift
   nameZone: { top: 4350, bottom: 5075 },        // empty zone between the photo and the red line
   nameMaxWidth: 3400, nameMaxSize: 340, nameMinSize: 140, nameColor: '#111111',
@@ -120,7 +131,7 @@ const CONFIG = {
 const canvas = $('posterCanvas'), ctx = canvas.getContext('2d');
 const nameInput = $('nameInput'), zoomInput = $('zoomInput');
 let template = null;          // background image for the chosen poster language
-let design = null;            // pixel size of the English Template.jpg; every CONFIG coordinate is in this space
+let design = null;            // pixel size of the English template (as Template.jpg); every CONFIG coordinate is in this space
 let templateReady = false, tplPreview = null;
 let userImage = null, userPreview = null, imageURL = null;
 let zoom = 1, panX = 0, panY = 0, previewScale = 0.2;
@@ -164,16 +175,23 @@ async function setPosterLang(l) {
     if (req === tplRequest) showError('tplFail');
   }
 }
-let posterLang = 'en';
-try { posterLang = localStorage.getItem('posterLang') === 'de' ? 'de' : 'en'; } catch (e) {}
+let posterLang = 'en', gender = 'm';
+try { const l = localStorage.getItem('posterLang'); if (CONFIG.templates[l] && !l.endsWith('-f')) posterLang = l; } catch (e) {}
 $('posterLang').value = posterLang;
+// the template for the chosen language, and for the chosen gender where the language needs one
+const tplKey = () => posterLang + (gender === 'f' && CONFIG.templates[posterLang + '-f'] ? '-f' : '');
+function showPosterLang() {
+  $('genderRow').hidden = !CONFIG.templates[posterLang + '-f'];
+  $('done').hidden = true;
+  setPosterLang(tplKey());
+}
 $('posterLang').addEventListener('change', e => {
   posterLang = e.target.value;
   try { localStorage.setItem('posterLang', posterLang); } catch (err) {}
-  $('done').hidden = true;
-  setPosterLang(posterLang);
+  showPosterLang();
 });
-setPosterLang(posterLang);
+$('posterGender').addEventListener('change', e => { gender = e.target.value; showPosterLang(); });
+showPosterLang();
 
 /* ---------- User photo ---------- */
 function makeUserPreview(img) {
@@ -248,6 +266,13 @@ fetch('javidnam/people.json', { cache: 'no-cache' })
     } else renderChosen();
   })
   .catch(() => {});
+// links to the gallery and the placards, once they have something to show
+for (const kind of ['gallery', 'placards']) {
+  fetch(`${kind}/items.json`, { cache: 'no-cache' })
+    .then(r => (r.ok ? r.json() : []))
+    .then(list => { if (list.length) $(kind + 'Link').hidden = $('moreLinks').hidden = false; })
+    .catch(() => {});
+}
 $('imageInput').addEventListener('change', e => handleFile(e.target.files[0]));
 
 const container = $('container');

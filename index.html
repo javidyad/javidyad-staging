@@ -19,8 +19,8 @@
 <meta name="theme-color" content="#1b2a4a">
 <!-- jsPDF 2.5.1, self-hosted so no third-party request is made -->
 <script src="lib/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="css/base.css?v=202610301736">
-<link rel="stylesheet" href="css/poster.css?v=202610301736">
+<link rel="stylesheet" href="css/base.css?v=202611131139">
+<link rel="stylesheet" href="css/poster.css?v=202611131139">
 </head>
 <body class="lang-pick">
 
@@ -37,11 +37,23 @@
 <div class="container" id="container" hidden>
   <div class="top"><img class="mini" src="Lion_and_Sun.png" alt="" onerror="this.hidden=true"><button id="langBtn" class="langbtn alt" type="button"></button></div>
   <h2><span data-i18n="title"></span><span class="tagline" data-i18n="tagline"></span></h2>
+  <nav class="more-links" id="moreLinks" hidden>
+    <a id="galleryLink" href="gallery.html" data-i18n="galleryLink" hidden></a>
+    <a id="placardsLink" href="placards.html" data-i18n="placardsLink" hidden></a>
+  </nav>
   <div class="warn" id="inApp" data-i18n="inApp" hidden></div>
 
   <div class="paper">
     <label for="posterLang" data-i18n="posterLangLabel"></label>
-    <select id="posterLang"><option value="en">English</option><option value="de">Deutsch</option></select>
+    <select id="posterLang">
+      <option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option>
+      <option value="fr">Français</option><option value="it">Italiano</option><option value="nl">Nederlands</option>
+      <option value="sv">Svenska</option>
+    </select>
+  </div>
+  <div class="paper" id="genderRow" hidden>
+    <label for="posterGender" data-i18n="genderLabel"></label>
+    <select id="posterGender"><option value="m" data-i18n="genderM"></option><option value="f" data-i18n="genderF"></option></select>
   </div>
 
   <a class="from-list" id="fromList" href="javidnam.html" hidden>
@@ -102,7 +114,7 @@
   </div>
 </div>
 
-<script type="module" src="js/poster.js?v=202610301736"></script>
+<script type="module" src="js/poster.js?v=202611131139"></script>
 <div style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99;padding:3px 14px;border-radius:0 0 8px 8px;background:#b98a1f;color:#1b2a4a;font:700 12px/1.6 Vazirmatn,Tahoma,sans-serif;pointer-events:none" lang="fa">نسخه‌ی آزمایشی · STAGING</div>
 </body>
 </html>
